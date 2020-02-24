@@ -19,6 +19,7 @@ import { Prediction, RibbonResponse, isGooglePrediction } from './types/';
 const searchBaseUrl = 'https://doctor-search-api.jasonleibowitz.now.sh/google-doctors';
 const detailBaseUrl = 'https://doctor-search-api.jasonleibowitz.now.sh/place-detail';
 const ribbonBaseUrl = 'https://doctor-search-api.jasonleibowitz.now.sh/ribbon-search';
+// const ribbonBaseUrl = 'localhost:3000/ribbon-search';
 
 const App = () => {
   const [open, setOpen] = useState(false);
@@ -30,12 +31,12 @@ const App = () => {
       updateSelectedOption(null);
     } else {
       try {
-        const url = isGoogle ? `${searchBaseUrl}?s=${value}&l=${searchLocation}` : `${ribbonBaseUrl}?q=${value}`;
+        const url = isGoogle ? `${searchBaseUrl}?s=${value}&l=${searchLocation}` : `${ribbonBaseUrl}?s=${value}`;
         const results = await axios.get(url);
         if (results.status === 200) {
           let predictions = [];
           if (isGoogle) {
-            predictions = results.data.predictions;
+            predictions = results.data;
           } else {
             predictions = results.data.data
           }
@@ -105,7 +106,7 @@ const App = () => {
                 {`${option.first_name} ${option.last_name}`}
               </span>
               <Typography variant="body2" color="textSecondary">
-                {option.specialties[0].display}
+                {option.specialties[0].display} - {option.locations[0].address_details.city}, {option.locations[0].address_details.state}
               </Typography>
             </Grid>
           </Grid>
