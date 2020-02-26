@@ -31,7 +31,7 @@ const App = () => {
       updateSelectedOption(null);
     } else {
       try {
-        const url = isGoogle ? `${searchBaseUrl}?s=${value}&l=${searchLocation}` : `${ribbonBaseUrl}?s=${value}`;
+        const url = isGoogle ? `${searchBaseUrl}?s=${value}&l=${searchLocation}` : `${ribbonBaseUrl}?s=${value}&l=${searchLocation}`;
         const results = await axios.get(url);
         if (results.status === 200) {
           let predictions = [];
