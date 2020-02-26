@@ -63,14 +63,24 @@ const App = () => {
   const [selectedOption, updateSelectedOption] = useState();
   // @ts-ignore
   const handleOptionClicked = async (option) => {
-    const placeId = option.place_id;
-    const detailResult = await axios.get(`${detailBaseUrl}?placeId=${placeId}`);
-    const {
-      formatted_address,
-      formatted_phone_number,
-      name,
-    } = detailResult.data.result;
-    updateSelectedOption({ name, address: formatted_address, phone: formatted_phone_number });
+    const placeId = option?.place_id;
+    if (placeId) {
+      const detailResult = await axios.get(`${detailBaseUrl}?placeId=${placeId}`);
+      const {
+        formatted_address,
+        formatted_phone_number,
+        name,
+      } = detailResult.data.result;
+      updateSelectedOption({ name, address: formatted_address, phone: formatted_phone_number });
+    } else {
+      const {
+        first_name,
+        last_name,
+        specialties,
+        locations,
+      } = option;
+      updateSelectedOption({ name: `${first_name} ${last_name}`, address: locations[0]?.address, phone: locations[0]?.phone_numbers[0]?.phone });
+    }
   };
 
   const handleGetOptionLabel = (option: Prediction | RibbonResponse) => {
