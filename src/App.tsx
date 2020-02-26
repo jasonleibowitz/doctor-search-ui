@@ -19,13 +19,14 @@ import { Prediction, RibbonResponse, isGooglePrediction } from './types/';
 const searchBaseUrl = 'https://doctor-search-api.jasonleibowitz.now.sh/google-doctors';
 const detailBaseUrl = 'https://doctor-search-api.jasonleibowitz.now.sh/place-detail';
 const ribbonBaseUrl = 'https://doctor-search-api.jasonleibowitz.now.sh/ribbon-search';
-// const ribbonBaseUrl = 'localhost:3000/ribbon-search';
 
 const App = () => {
   const [open, setOpen] = useState(false);
   const [predictions, updatePredictions] = useState([]);
+  const [isLoading, updateIsLoading] = useState(false);
   const handleInputChange = async (event: object, value: string, reason: string) => {
     const isGoogle = searchType === 'google';
+    updateIsLoading(true);
 
     if (reason === 'clear') {
       updateSelectedOption(null);
@@ -41,11 +42,14 @@ const App = () => {
             predictions = results.data.data
           }
           updatePredictions(predictions);
+          updateIsLoading(false);
         } else {
           // handle non 200 case
+          updateIsLoading(false);
         }
       } catch (err) {
         // handle error case
+        updateIsLoading(false);
       }
     }
   };
@@ -76,7 +80,6 @@ const App = () => {
       const {
         first_name,
         last_name,
-        specialties,
         locations,
       } = option;
       updateSelectedOption({ name: `${first_name} ${last_name}`, address: locations[0]?.address, phone: locations[0]?.phone_numbers[0]?.phone });
@@ -126,7 +129,7 @@ const App = () => {
   }
             
 
-  const loading = open && predictions.length === 0;
+  const loading = open && isLoading;
 
   return (
     <Grid container justify="center" spacing={1}>
